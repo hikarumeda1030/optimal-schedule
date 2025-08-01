@@ -1,0 +1,9 @@
+{
+    "model": "resnet18",
+    "bs": 64,
+    "bs_method": "constant",
+    "lr": 0.1,
+    "lr_method": "constant",
+    "epochs": 257,
+    "csv_path": "../result/CIFAR100/exp_comp/bs64_const_lr_const/run1/"
+}
