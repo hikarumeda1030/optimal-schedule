@@ -47,8 +47,8 @@ The following JSON configuration file is located at `src/json/const.json`:
 |`lr`|`float` (e.g., `0.1`)| The initial learning rate for the optimizer. |
 |`epochs`|`int` (e.g., `200`)|The total number of epochs for training.|
 |`incr_interval`|`int` (e.g., `20`)|Interval (in epochs) at which the batch size and learning rate will increase.|
-|`coefficient`|`int` (e.g., `16`)|The factor by which the batch size increases after each interval. Used when `bs_method` is `"linear_growth"`.|
-|`bs_exp_rate`|`float` (e.g., `2.0`)|The factor by which the batch size increases after each interval. Used when `bs_method` is `"exp_growth"`.|
-|`lr_exp_rate`| `float` (e.g., `1.4`) |The factor by which the learning rate increases after each interval. Used when `lr_method` is `"exp_growth"`.|
+|`coefficient`|`int` (e.g., `16`)|Used when `bs_method` is set to `"linear_growth"`. Specifies the additive increment of the batch size at each interval.|
+|`bs_exp_rate`|`float` (e.g., `2.0`)|Used when `bs_method` is set to `"exp_growth"`. Specifies the multiplicative factor by which the batch size increases at each interval.|
+|`lr_exp_rate`| `float` (e.g., `1.4`) |Used when `lr_method` is set to `"exp_growth"`. Specifies the multiplicative factor by which the learning rate increases at each interval.|
 |`csv_path`|`str` (e.g., `"path/to/result/csv/"`)|Specifies the directory where CSV files will be saved. Four CSV files—`train.csv`, `test.csv`, `norm.csv`, and `lr_bs.csv`—will be saved in this directory.|
 
