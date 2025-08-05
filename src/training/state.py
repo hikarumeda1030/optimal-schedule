@@ -10,12 +10,10 @@ class TrainingState:
     device: torch.device
     steps: Steps
     lr_scheduler: object
-    lr_step_type: str
     bs_scheduler: object
-    bs_step_type: str
     criterion: object
     epoch: int = 0
-    eps: float = 0.1
+
 
 @dataclass
 class TrainingResults:

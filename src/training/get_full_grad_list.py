@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 def get_full_grad_list(model, trainloader, optimizer, device):
     parameters = [p for p in model.parameters() if p.requires_grad]
     total_samples = len(trainloader.dataset)
@@ -30,4 +31,3 @@ def get_full_grad_list(model, trainloader, optimizer, device):
 
     total_norm = torch.sqrt(sum(g.norm()**2 for g in full_grad_list)).item()
     return total_norm
-

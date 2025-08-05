@@ -1,0 +1,11 @@
+{
+    "model": "resnet18",
+    "bs": 16,
+    "bs_method": "exp_growth",
+    "bs_exp_rate": 2,
+    "bs_step_type": "periodic",
+    "lr": 0.1,
+    "lr_method": "constant",
+    "epochs": 200,
+    "csv_path": "../result/CIFAR100/exp_comp/bs_periodic_lr_const25/run2/"
+}

@@ -13,7 +13,7 @@ from optim.sgd import SGD
 
 TOTAL_STEPS = None
 MAX_BS = 2048
-    
+
 
 # Command Line Argument
 def get_args():
@@ -29,12 +29,15 @@ if __name__ == '__main__':
     with open(args.config_path, 'r') as f:
         config = json.load(f)
     epochs = get_config_value(config, "epochs")
+    bs_method = get_config_value(config, "bs_method")
+    lr_method = get_config_value(config, "lr_method")
+    incr_interval = config.get("incr_interval", 0)
     csv_path = config.get("csv_path", "../result/csv/")
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
 
     # Dataset Preparation
-    mean = [129.3/255, 124.1/255, 112.4/255]
-    std = [68.2/255, 65.4/255, 70.4/255]
+    mean = [129.3 / 255, 124.1 / 255, 112.4 / 255]
+    std = [68.2 / 255, 65.4 / 255, 70.4 / 255]
 
     transform_train = transforms.Compose([
         transforms.RandomCrop(32, padding=4),
@@ -63,11 +66,11 @@ if __name__ == '__main__':
 
     lr = get_config_value(config, "lr")
     optimizer = SGD(model.parameters(), lr=lr)
-    bs_scheduler, bs_step_type = get_bs_eps_scheduler(config, max_bs=MAX_BS)
-    lr_scheduler, lr_step_type = get_lr_scheduler(optimizer, config)
+    bs_scheduler = get_bs_eps_scheduler(config, max_bs=MAX_BS)
+    lr_scheduler = get_lr_scheduler(optimizer, config)
     print(optimizer)
 
-    sampler = DynamicBatchSampler(len(trainset), scheduler=bs_scheduler, shuffle=True, drop_last=True)
+    sampler = DynamicBatchSampler(len(trainset), scheduler=bs_scheduler, shuffle=True)
 
     trainloader = torch.utils.data.DataLoader(
         trainset,
@@ -82,31 +85,27 @@ if __name__ == '__main__':
         device=device,
         steps=Steps(),
         lr_scheduler=lr_scheduler,
-        lr_step_type=lr_step_type,
         bs_scheduler=bs_scheduler,
-        bs_step_type=bs_step_type,
         criterion=criterion,
         epoch=0,
-        eps=config.get("eps", 0.1)
     )
     results = TrainingResults()
 
     for epoch in range(state.epoch, epochs):
         state.epoch = epoch
 
-        if state.bs_step_type == 'periodic' and epoch in [25, 50, 75, 100, 125, 150, 175]:
-            state.bs_scheduler.step()
-            print(f"bs = {state.bs_scheduler.get_batch_size()}")
-
-        if state.lr_step_type == 'periodic' and epoch in [25, 50, 75, 100, 125, 150, 175]:
-            state.lr_scheduler.step()
-            lr = state.lr_scheduler.get_last_lr()[0]
-
-        train(state, results, trainloader, trainloader_full, total_steps=TOTAL_STEPS, max_bs=MAX_BS)
+        train(state, results, trainloader, trainloader_full)
 
         test(state, results, testloader)
 
         print(f'Epoch: {epoch + 1}, Steps: {state.steps.total}, Train Loss: {results.train[epoch][2]:.4f}, Test Acc: {results.test[epoch][3]:.2f}%')
+
+        if bs_method in ["linear_growth", "exp_growth"] and (epoch + 1) % incr_interval == 0:
+            state.bs_scheduler.step()
+
+        if lr_method in ["exp_growth"] and (epoch + 1) % incr_interval == 0:
+            state.lr_scheduler.step()
+            lr = state.lr_scheduler.get_last_lr()[0]
 
     # Save to CSV file
     save_to_csv(csv_path, results)

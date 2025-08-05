@@ -55,29 +55,3 @@ class LambdaBS(BSScheduler):
             return min(self.max_bs, math.ceil(self.initial_bs * self.bs_lambda(self.last_step)))
         else:
             return math.ceil(self.initial_bs * self.bs_lambda(self.last_step))
-
-
-class LambdaBSEps(BSScheduler):
-    def __init__(
-        self,
-        initial_bs: int,
-        bs_lambda: Callable[[int], float],
-        initial_eps: float = None,
-        max_bs=None,
-        last_step: int = -1
-    ):
-        self.bs_lambda = bs_lambda
-        self.initial_eps = initial_eps
-        super().__init__(initial_bs, max_bs, last_step)
-
-    def get_batch_size(self) -> int:
-        if self.max_bs is not None:
-            return min(self.max_bs, math.ceil(self.initial_bs * self.bs_lambda(self.last_step)))
-        else:
-            return math.ceil(self.initial_bs * self.bs_lambda(self.last_step))
-
-    def get_epsilon(self) -> float:
-        if self.initial_eps == None:
-            return None
-        else:
-            return self.initial_eps * math.sqrt(self.initial_bs / self.get_batch_size())

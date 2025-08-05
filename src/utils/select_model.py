@@ -1,6 +1,5 @@
 from models.resnet import resnet18, resnet34, resnet50, resnet101, resnet152
 from models.wideresnet import WideResNet40_4, WideResNet16_8, WideResNet28_10, WideResNet28_12
-from models.densenet import densenet121
 
 
 def select_model(model_name, num_classes=100):
@@ -23,7 +22,5 @@ def select_model(model_name, num_classes=100):
         return WideResNet28_10(num_classes=num_classes)
     elif model_name == "WideResNet28_12":
         return WideResNet28_12(num_classes=num_classes)
-    elif model_name == "densenet":
-        return densenet121()
     else:
         raise ValueError(f"Unknown model name {model_name}")
