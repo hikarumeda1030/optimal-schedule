@@ -1,7 +1,6 @@
 # Optimal Growth Schedules for Batch Size and Learning Rate in SGD that Reduce SFO Complexity
 Source code for reproducing our paper's experiments.
 
-The results of the experiments can be found in the [Result Directory](./result/README.md).
 # Abstract
 The unprecedented growth of deep learning models has enabled remarkable advances but introduced substantial computational bottlenecks.
 A key factor contributing to training efficiency is batch-size and learning-rate scheduling in stochastic gradient methods.
